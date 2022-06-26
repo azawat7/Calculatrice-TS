@@ -1,26 +1,21 @@
-// function clearScreen() {
-// 	const screen =
-// 		(document.getElementById("result") as HTMLInputElement) || null;
-// 	if (screen != null) {
-// 		screen.value = "";
-// 	}
-// }
+function clearScreen() {
+	const screen = document.getElementById("result") as HTMLInputElement;
 
-// function display(value) {
-// 	const screen =
-// 		(document.getElementById("result") as HTMLInputElement) || null;
-// 	if (screen != null) {
-// 		screen.value += value;
-// 	}
-// }
+	screen.value = "";
+}
 
-// function calculate() {
-// 	var p = (document.getElementById("result") as HTMLInputElement) || null;
-// 	if (p != null) {
-// 		var q = eval(p.value);
-// 		p.value = q;
-// 	}
-// }
+function display(value) {
+	const screen = document.getElementById("result") as HTMLInputElement;
+
+	screen.value += value;
+}
+
+function calculate() {
+	var p = document.getElementById("result") as HTMLInputElement;
+
+	var q = eval(p.value);
+	p.value = q;
+}
 
 class Calculator {
 	constructor() {}
@@ -59,11 +54,11 @@ class Calculator {
 			if (buttons[i] == "span") {
 				htmlString += "<span></span>";
 			} else if (buttons[i] == "0") {
-				htmlString += `<button class="zero" value="${buttons[i]}">${buttons[i]}</button>`;
+				htmlString += `<button class="zero" onclick="display('${buttons[i]}')" value="${buttons[i]}">${buttons[i]}</button>`;
 			} else if (buttons[i] == "=") {
-				htmlString += `<button class="equals" value="${buttons[i]}">${buttons[i]}</button>`;
+				htmlString += `<button onclick="calculate()" class="equals" value="${buttons[i]}">${buttons[i]}</button>`;
 			} else {
-				htmlString += `<button value="${buttons[i]}">${buttons[i]}</button>`;
+				htmlString += `<button onclick="display('${buttons[i]}')" value="${buttons[i]}">${buttons[i]}</button>`;
 			}
 		}
 		htmlString += `</section>`;
