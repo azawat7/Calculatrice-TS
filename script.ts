@@ -1,73 +1,100 @@
-function clearScreen() {
-	const screen = document.getElementById("result") as HTMLInputElement;
-
-	screen.value = "";
-}
-
-function display(value) {
-	const screen = document.getElementById("result") as HTMLInputElement;
-
-	screen.value += value;
-}
-
-function calculate() {
-	var p = document.getElementById("result") as HTMLInputElement;
-
-	var q = eval(p.value);
-	p.value = q;
-}
-
 class Calculator {
-	constructor() {}
+	_element: HTMLDivElement;
+	buttons: string[] = [
+		"ac",
+		"",
+		"/",
+		"*",
+		"7",
+		"8",
+		"9",
+		"-",
+		"4",
+		"5",
+		"6",
+		"+",
+		"1",
+		"2",
+		"3",
+		"=",
+		"0",
+		".",
+	];
+	wide_btns: string[] = ["0"];
+	height_btns: string[] = ["="];
 
-	init(): void {
-		var htmlString = "";
-		var calculator = document.getElementById("calculator");
-		const buttons = [
-			"ac",
-			"span",
-			"/",
-			"*",
-			"7",
-			"8",
-			"9",
-			"-",
-			"4",
-			"5",
-			"6",
-			"+",
-			"1",
-			"2",
-			"3",
-			"=",
-			"0",
-			".",
-		];
+	get buttonElements(): HTMLButtonElement[] {
+		return [
+			...this._element.querySelectorAll("section > button"),
+		] as HTMLButtonElement[];
+	}
 
-		htmlString += `<header class="calculator_display">`;
-		htmlString += `<h2 class="calculator_title">Calculette TS</h2>`;
-		htmlString += `<input class="display-box" type="text" id="result" data-role="display" disabled/>`;
-		htmlString += `</header>`;
+	get screen_content(): string {
+		return (
+			this._element.querySelector(
+				"header.calculator-display > input.display-box",
+			) as HTMLInputElement
+		).value;
+	}
 
-		htmlString += `<section class="buttons grid">`;
-		for (var i = 0; i < buttons.length; i++) {
-			if (buttons[i] == "span") {
-				htmlString += "<span></span>";
-			} else if (buttons[i] == "0") {
-				htmlString += `<button class="zero" onclick="display('${buttons[i]}')" value="${buttons[i]}">${buttons[i]}</button>`;
-			} else if (buttons[i] == "=") {
-				htmlString += `<button onclick="calculate()" class="equals" value="${buttons[i]}">${buttons[i]}</button>`;
-			} else if (buttons[i] == "ac") {
-				htmlString += `<button onclick="clearScreen()" value="${buttons[i]}">AC</button>`;
-			} else {
-				htmlString += `<button onclick="display('${buttons[i]}')" value="${buttons[i]}">${buttons[i]}</button>`;
-			}
+	set screen_content(value: string) {
+		(
+			this._element.querySelector(
+				"header.calculator-display > input.display-box",
+			) as HTMLInputElement
+		).value = value;
+	}
+
+	constructor(
+		element: HTMLDivElement = document.querySelector(
+			"div#calculator",
+		) as HTMLInputElement,
+	) {
+		this._element = element;
+
+		this._element.innerHTML = `
+		<header class="calculator-display">
+			<h2 class="calculator-title">Calculette TS</h2>
+			<input class="display-box" type="text" id="result" data-role="display" disabled/>
+		</header>
+		<section class="buttons grid">
+			${this.buttons
+				.map(b => {
+					if (b == "") return "<span></span>";
+
+					if (this.wide_btns.includes(b))
+						return `<button class="wide" value="${b}">${b}</button>`;
+
+					if (this.height_btns.includes(b))
+						return `<button class="height" value="${b}">${b}</button>`;
+
+					return `<button value="${b}">${b}</button>`;
+				})
+				.join("")}
+		`;
+
+		this.buttonElements.forEach(e => {
+			e.addEventListener("click", e => this.onButtonClick(e));
+		});
+	}
+
+	onButtonClick(e: MouseEvent) {
+		let value = (e.target! as HTMLButtonElement).value;
+		switch (value) {
+			case "ac":
+				this.screen_content = "";
+				return;
+			case "=":
+				if (this.screen_content != "") {
+					this.screen_content = (
+						window as Window & typeof globalThis & { math: any }
+					).math.evaluate(this.screen_content);
+				}
+				return;
+			default:
+				this.screen_content += value;
 		}
-		htmlString += `</section>`;
-
-		calculator.innerHTML = htmlString;
 	}
 }
 
 const calc = new Calculator();
-calc.init();
