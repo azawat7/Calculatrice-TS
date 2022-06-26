@@ -57,6 +57,8 @@ class Calculator {
 				htmlString += `<button class="zero" onclick="display('${buttons[i]}')" value="${buttons[i]}">${buttons[i]}</button>`;
 			} else if (buttons[i] == "=") {
 				htmlString += `<button onclick="calculate()" class="equals" value="${buttons[i]}">${buttons[i]}</button>`;
+			} else if (buttons[i] == "ac") {
+				htmlString += `<button onclick="clearScreen()" value="${buttons[i]}">AC</button>`;
 			} else {
 				htmlString += `<button onclick="display('${buttons[i]}')" value="${buttons[i]}">${buttons[i]}</button>`;
 			}
